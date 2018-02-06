@@ -1,0 +1,38 @@
+// comment: RISTRETTO generator test configuration
+:Settings
+NUM_CORES=2                          // NUM_CORES=2 supported only
+DATASPACES_FOR_CORE0_MIN=4;	//
+DATASPACES_FOR_CORE0_MAX=8;           // 1 . . . 8
+DATASPACES_FOR_CORE1_MIN=4;
+DATASPACES_FOR_CORE1_MAX=8;           // 1 . . . 8
+
+DATASPACES_ALIGNMENT_L1WAYSIZE=0x1000         // L1 way size
+DATASPACES_ALIGNMENT_L1SIZE=0x8000            // L1 size
+DATASPACES_ALIGNMENT_L2WAYSIZE=0x20000        // L2 way size
+DATASPACES_ALIGNMENT_L2SIZE=0x80000           // L2 size
+
+DATASPACES_ALIGNMENT_L1WAYSIZE_RATIO = 1
+DATASPACES_ALIGNMENT_L1SIZE_RATIO = 2
+DATASPACES_ALIGNMENT_L2WAYSIZE_RATIO = 4
+DATASPACES_ALIGNMENT_L2SIZE_RATIO = 2
+
+DATASPACES_SIZE_MIN=70              // bytes
+DATASPACES_SIZE_MAX=199             // bytes
+
+RANDOMIZE_INSTRUCTION_SEQ=50;        // 0100 , %
+// direct = reverse instruction seq = (100 - RANDOMIZE_INSTRUCTION_SEQ)/2
+ZONE_REEXEC = 50		    // % 0 -100 ZONE REEXECUTION PROBABILITY
+DISABLE_FALSE_SHARING = 0;		// 1 - disable on, 0 - disable off
+
+ONE_TEST_LENGHT_MIN = 70;            // instructions per one subtest, min
+ONE_TEST_LENGHT_MAX = 100;           // instructions per one subtest, max
+
+TEST_ZONES = 10;                     // number of subtests
+
+:MEMORY
+// Name, Lower, Upper,  Attribute
+DATA1, 0xffffffff80100000, 0xffffffff80f00000, R/W
+DATA2, 0x9800000050000000, 0x980000005effffff, R/W
+DATA3, 0xffffffff80ff0000, 0xffffffff80ffffff, R
+DATA4, 0x980000005f000000, 0x980000005fffffff, W
+:END
