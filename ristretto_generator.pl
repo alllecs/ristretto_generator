@@ -152,7 +152,7 @@ get_settings();
 #Convert int to hex
 sub get_hex {
 	my ($value) = @_;
-	return ( sprintf("0x%08X", $value) );
+	return ( sprintf("0x%16X", $value) );
 }
 
 #Generate start addr
@@ -241,10 +241,9 @@ sub start {
 # Initialization data
 sub data_initialize {
 	my ($start_addr, $total_size) = @_;
-	$start_addr = ($start_addr & 0xfffffff4);
-	my $start_addr_hex = sprintf("0x%08X", $start_addr);
+	my $start_addr_hex = get_hex($start_addr);
 
-	print "\n\tli s1, $start_addr_hex\n";
+	print "\n\tdli s1, $start_addr_hex\n";
 	print "\tli s2, $total_size\n";
 	print "1:\tlw t0,(s0)\n";
 	print "\tsw t0,(s1)\n";
@@ -362,11 +361,6 @@ sub cic {
 #	$total_array[][]
 }
 
-sub get_hex {
-	my ($value) = @_;
-	return ( sprintf("0x%08X", $value) );
-}
-
 sub check_equality {
 	my ($n1, $n2) = @_;
 
@@ -405,8 +399,8 @@ sub print_test {
 	($rand_reg_1, $rand_reg_2) = check_equality($rand_reg_1, $rand_reg_2);
 
 	print "\ntest_00${test_n}_core0:\n";
-	print "\tli s$rand_reg_1, $addr_hex_1\n";
-	print "\tli s$rand_reg_2, $addr_hex_2\n";
+	print "\tdli s$rand_reg_1, $addr_hex_1\n";
+	print "\tdli s$rand_reg_2, $addr_hex_2\n";
 
 	# Замес или переворот массива.
 
@@ -472,8 +466,8 @@ sub print_test {
 	$addr_hex_2 = get_hex( $start_array[$num_iter_1_2][0] );
 
 	print "\ntest_00${test_n}_core1:\n";
-	print "\tli s$rand_reg_1, $addr_hex_1\n";
-	print "\tli s$rand_reg_2, $addr_hex_2\n";
+	print "\tdli s$rand_reg_1, $addr_hex_1\n";
+	print "\tdli s$rand_reg_2, $addr_hex_2\n";
 	#
 	# Print all instructions
 	for(my $i = 0, my $inst = 0; $i < $instructions_number; $i++, $inst++) {
@@ -552,6 +546,11 @@ sub run_gen {
 
 	# Main for core 0
 	print "main_core0:\n";
+
+	# Enable 64 bit addr for core0
+	print "\tmfc0 t0, C0_STATUS\n";
+	print "\tori t0, t0, 0x80\n";
+	print "\tmtc0 t0, C0_STATUS\n";
 	print "\tjal init_core0\n";
 	print "\tnop\n";
 	print "\tSYNC_CORES\n";
@@ -581,6 +580,12 @@ sub run_gen {
 
 	# Main for core 0
 	print "main_core1:\n";
+
+	# Enable 64 bit addr for core1
+	print "\tmfc0 t0, C0_STATUS\n";
+	print "\tori t0, t0, 0x80\n";
+	print "\tmtc0 t0, C0_STATUS\n";
+
 	print "\tjal init_core1\n";
 	print "\tnop\n";
 	print "\tSYNC_CORES\n";
