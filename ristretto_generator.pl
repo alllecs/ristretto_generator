@@ -510,6 +510,52 @@ sub print_test {
 	print "\tjr ra\n\tnop\n\n";
 }
 
+sub get_main {
+	my ($core) = @_;
+
+	print "main_core$core:\n";
+
+	# Enable 64 bit addr
+	print "\tmfc0 t0, C0_STATUS\n";
+	print "\tori t0, t0, 0x80\n";
+	print "\tmtc0 t0, C0_STATUS\n";
+
+	# Initialization core
+	print "\tjal init_core$core\n";
+	print "\tnop\n";
+	#Synchronization cores
+	print "\tSYNC_CORES\n";
+
+	#Initialization 't' registers
+	for(my $j = 0; $j < 8; $j++) {	#t0-t7
+		printf("\tdli t$j, 0x%016X\n", (int(rand(4294967296)) << 32) | int(rand(4294967296)) );
+	}
+
+	#Synchronization cores
+	print "\tSYNC_CORES\n";
+
+	# Test link
+	my $z = 0;
+	for (my $n = 1; $n <= $test_zones; $n++) {
+		print "\tjal test_00${n}_core$core\n";
+		print "\tnop\n";
+		print "\tSYNC_CORES\n";
+
+		# Repeat test
+#		if (int(rand(2)) && $z < $zone_reexec * 100 / $test_zones) {
+		if (int(rand(100)) < $zone_reexec) {
+			$zone_rexec[$n]++;
+			print "\tjal test_00${n}_core$core\n";
+			print "\tnop\n";
+			print "\tSYNC_CORES\n";
+			$z++;
+		}
+	}
+
+	print "\twait 0x7ffff\n\n";
+	print "\t.rept 10; nop; .endr\n\n";
+}
+
 sub run_gen {
 	print "#include \"regdef_k64.h\"\n";
 	print "#include \"kernel_k64.h\"\n";
@@ -544,70 +590,8 @@ sub run_gen {
 		print_test($n);
 	}
 
-	# Main for core 0
-	print "main_core0:\n";
-
-	# Enable 64 bit addr for core0
-	print "\tmfc0 t0, C0_STATUS\n";
-	print "\tori t0, t0, 0x80\n";
-	print "\tmtc0 t0, C0_STATUS\n";
-	print "\tjal init_core0\n";
-	print "\tnop\n";
-	print "\tSYNC_CORES\n";
-	for(my $j = 0; $j < 8; $j++) {	#t0-t7
-		my $rnd = sprintf("\tdli t$j, 0x%016X\n", (int(rand(4294967296)) << 32) | int(rand(4294967296)) );
-		print $rnd;
-	}
-	print "\tSYNC_CORES\n";
-
-	my $z = 0;
-	for (my $n = 1; $n <= $test_zones; $n++) {
-		print "\tjal test_00${n}_core0\n";
-		print "\tnop\n";
-		print "\tSYNC_CORES\n";
-#		if (int(rand(2)) && $z < $zone_reexec * 100 / $test_zones) {
-		if (int(rand(100)) < $zone_reexec) {
-			$zone_rexec[$n]++;
-			print "\tjal test_00${n}_core0\n";
-			print "\tnop\n";
-			print "\tSYNC_CORES\n";
-			$z++;
-		}
-	}
-
-	print "\twait 0x7ffff\n\n";
-	print "\t.rept 10; nop; .endr\n\n";
-
-	# Main for core 0
-	print "main_core1:\n";
-
-	# Enable 64 bit addr for core1
-	print "\tmfc0 t0, C0_STATUS\n";
-	print "\tori t0, t0, 0x80\n";
-	print "\tmtc0 t0, C0_STATUS\n";
-
-	print "\tjal init_core1\n";
-	print "\tnop\n";
-	print "\tSYNC_CORES\n";
-	# init all registers
-	for(my $j = 0; $j < $t_regs; $j++) {	#t0-t7
-		my $rnd = sprintf("\tdli t$j, 0x%016X\n", (int(rand(4294967296)) << 32) | int(rand(4294967296)) | 0x88888888);
-		print $rnd;
-	}
-	print "\tSYNC_CORES\n";
-
-	for (my $n = 1; $n <= $test_zones; $n++) {
-		print "\tjal test_00${n}_core1\n";
-		print "\tnop\n";
-		print "\tSYNC_CORES\n";
-		if ($zone_rexec[$n]) {
-			print "\tjal test_00${n}_core1\n";
-			print "\tnop\n";
-			print "\tSYNC_CORES\n";
-		}
-	}
-	print "\twait 0x7ffff\n\n";
-	print "\t.rept 10; nop; .endr\n\n";
+	get_main(0);
+	get_main(1);
 
 	print "\n#include \"random_data.h\"\n";
 #	print "$perc_rand[0] $perc_rand[1] $perc_rand[2] $test_zones \n";
