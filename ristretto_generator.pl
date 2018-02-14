@@ -46,11 +46,13 @@ my $disable_false_sharing = 0;
 
 my @perc_rand = (0, 0, 0);
 my @array_a_size = ();
+my @array_a_ratio = ();
 my @array_addr = ();
 
 sub get_settings {
 	my $i_addr = 0;
 	my $i_a_size = 0;
+	my $i_a_ratio = 0;
 	my @array_settings = ();
 	my @array1 = ();
 
@@ -136,10 +138,12 @@ sub get_settings {
 			$array_addr[$i_addr][0] = $1;
 			$array_addr[$i_addr][1] = $2;
 			$i_addr++;
-		}
-		if(/DATASPACES_ALIGNMENT.*SIZE\s?=\s?([0-9abcdefx]+)/) {
+		} elsif(/DATASPACES_ALIGNMENT.*SIZE\s?=\s?([0-9abcdefx]+)/) {
 			$array_a_size[$i_a_size] = $1;
 			$i_a_size++;
+		} elsif(/DATASPACES_ALIGNMENT.*SIZE_RATIO\s?=\s?(\d+)/) {
+			$array_a_ratio[$i_a_ratio] = $1;
+			$i_a_ratio++;
 		}
 	}
 
@@ -152,14 +156,31 @@ get_settings();
 #Convert int to hex
 sub get_hex {
 	my ($value) = @_;
-	return ( sprintf("0x%16X", $value) );
+	return ( sprintf("0x%X", $value) );
 }
 
 #Generate start addr
 sub get_start_addr {
 	my $rand_index_addr = int(rand(@array_addr));
+	my $max_ratio = 0;
+	my $alignment_size = 0;
 	my $max_size = Math::BigInt->new($array_addr[$rand_index_addr][1]) - Math::BigInt->new($array_addr[$rand_index_addr][0]);
-	my $alignment_size = eval $array_a_size[int(rand(@array_a_size))];
+	for(my $i = 0; $i < $#array_a_ratio; $i++) {
+		$max_ratio += $array_a_ratio[$i];
+	}
+	my $rand_index_size = int(rand($max_ratio + 1));
+	if($rand_index_size > 0 && $rand_index_size <= $array_a_ratio[0]) {
+		$alignment_size = eval $array_a_size[0];
+	} elsif ($rand_index_size > $array_a_ratio[0] && $rand_index_size <= $array_a_ratio[1]) {
+		$alignment_size = eval $array_a_size[1];
+	} elsif ($rand_index_size > $array_a_ratio[1] && $rand_index_size <= $array_a_ratio[2]) {
+		$alignment_size = eval $array_a_size[2];
+	} elsif ($rand_index_size > $array_a_ratio[2] && $rand_index_size <= $array_a_ratio[3]) {
+		$alignment_size = eval $array_a_size[3];
+	} else {
+		$alignment_size = eval $array_a_size[int(rand(@array_a_size))];
+	}
+
 	my $point = $max_size / $alignment_size;
 	my $start_addr = Math::BigInt->new($array_addr[$rand_index_addr][0]) + (int(rand($point)) * $alignment_size);
 #	$start_addr = get_hex($start_addr);
