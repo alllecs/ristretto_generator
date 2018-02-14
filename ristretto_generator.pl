@@ -285,12 +285,12 @@ sub generate_data {
 
 	if($core) {	#core 1
 		for(my $i = 0; $i <=  $total_size; $i++) {
-			$rand_data = sprintf(".word 0x%08X", int(rand(2 ** 32) | 0x88888888));
+			$rand_data = get_hex(int(rand(2 ** 32) | 0x88888888));
 			print "$rand_data\n";
 		}
 	} else {	#core 0
 		for(my $i = 0; $i <=  $total_size; $i++) {
-			$rand_data = sprintf(".word 0x%08X", int(rand(2 ** 32) & 0x77777777));
+			$rand_data = get_hex(int(rand(2 ** 32) & 0x77777777));
 			print "$rand_data\n";
 		}
 	}
@@ -372,7 +372,6 @@ sub generate_instructions {
 }
 
 sub cic {
-#	$pointer[][];
 	for(my $i = 0; $i < @pointer; $i++) {
 		for(my $j = 0; $j < @{$pointer[$i]}; $j++) {
 			print "$pointer[$i][$j][1] ";
@@ -457,7 +456,7 @@ sub print_test {
 		} else {
 			$rand_status = 0;
 		}
-		my $offset_hex = sprintf("0x%X", $tmp_array[$rand_core][$num_iter][$inst][1]);
+		my $offset_hex = get_hex($tmp_array[$rand_core][$num_iter][$inst][1]);
 		print "\t$tmp_array[$rand_core][$num_iter][$inst][0] t$num_reg, $offset_hex(s$rand_reg)\n ";
 	}
 	$perc_rand[$rand_status]++;
@@ -522,7 +521,7 @@ sub print_test {
 		} else {
 			$rand_status = 0;
 		}
-		my $offset_hex = sprintf("0x%X", $tmp_array[$rand_core][$num_iter][$inst][1]);
+		my $offset_hex = get_hex($tmp_array[$rand_core][$num_iter][$inst][1]);
 		print "\t$tmp_array[$rand_core][$num_iter][$inst][0] t$num_reg, $offset_hex(s$rand_reg)\n ";
 	}
 
