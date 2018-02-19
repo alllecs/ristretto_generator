@@ -152,6 +152,10 @@ sub get_settings {
 }
 
 get_settings();
+my @perc_r = ( (100 - $randomize_instruction_seq) / 2, (100 - $randomize_instruction_seq) / 2, $randomize_instruction_seq);
+my $instructions_number = int(rand($one_test_lenght_max - $one_test_lenght_min) + $one_test_lenght_min); #the number of instructions in subtests
+$start_0 = int(rand($dataspaces_for_core0_max - $dataspaces_for_core0_min) + $dataspaces_for_core0_min); #the number of sections for core 0
+$start_1 = int(rand($dataspaces_for_core1_max - $dataspaces_for_core1_min) + $dataspaces_for_core1_min); #the number of sections for core 1
 
 #Convert int to hex
 sub get_hex {
@@ -188,10 +192,6 @@ sub get_start_addr {
 	return $start_addr;
 }
 
-$start_0 = int(rand($dataspaces_for_core0_max - $dataspaces_for_core0_min) + $dataspaces_for_core0_min); #the number of sections for core 0
-$start_1 = int(rand($dataspaces_for_core1_max - $dataspaces_for_core1_min) + $dataspaces_for_core1_min); #the number of sections for core 1
-my @perc_r = ( (100 - $randomize_instruction_seq) / 2, (100 - $randomize_instruction_seq) / 2, $randomize_instruction_seq);
-my $instructions_number = int(rand($one_test_lenght_max - $one_test_lenght_min) + $one_test_lenght_min); #the number of instructions in subtests
 
 # Filling array: start address and section sizes
 sub start {
@@ -565,7 +565,7 @@ sub get_main {
 #		if (int(rand(2)) && $z < $zone_reexec * 100 / $test_zones) {
 		if (int(rand(100)) < $zone_reexec) {
 			$zone_rexec[$n]++;
-			print "\tjal test_00${n}_core$core\n";
+			print "\tjal test_00${n}_core$core //reexec test $n\n";
 			print "\tnop\n";
 			print "\tSYNC_CORES\n";
 			$z++;
@@ -578,7 +578,7 @@ sub get_main {
 
 sub run_gen {
 	print "#include \"regdef_k64.h\"\n";
-	print "#include \"kernel_k64.h\"\n";
+	print "#include \"kernel_k64.h\"\n\n";
 	print "\t.macro SYNC_CORES\n";
 	print "\t.set noreorder\n";
 	print "\tmfc0 s5,\$15,1\n";
