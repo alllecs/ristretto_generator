@@ -285,12 +285,12 @@ sub generate_data {
 
 	if($core) {	#core 1
 		for(my $i = 0; $i <=  $total_size; $i++) {
-			$rand_data = get_hex(int(rand(2 ** 32) | 0x88888888));
+			$rand_data = sprintf(".word 0x%08X", int(rand(2 ** 32) | 0x88888888));
 			print "$rand_data\n";
 		}
 	} else {	#core 0
 		for(my $i = 0; $i <=  $total_size; $i++) {
-			$rand_data = get_hex(int(rand(2 ** 32) & 0x77777777));
+			$rand_data = sprintf(".word 0x%08X", int(rand(2 ** 32) & 0x77777777));
 			print "$rand_data\n";
 		}
 	}
