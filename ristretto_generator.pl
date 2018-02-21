@@ -268,10 +268,10 @@ sub data_initialize {
 	print "\tli s2, $total_size\n";
 	print "1:\tlw t0,(s0)\n";
 	print "\tsw t0,(s1)\n";
-	print "\taddiu s0, s0, 4\n";
-	print "\taddiu s2, s2, -1\n";
+	print "\tdaddiu s0, s0, 4\n";
+	print "\tdaddiu s2, s2, -1\n";
 	print "\tbne s2, r0, 1b\n";
-	print "\taddiu s1, s1, 4\n";
+	print "\tdaddiu s1, s1, 4\n";
 	print "\tsw r0,(s1)\n";
 	print "\tsw r0,4(s1)\n";
 	print "\tsw r0,8(s1)\n";
@@ -513,7 +513,7 @@ sub run_gen {
 	print "\t.set noreorder\n";
 	print "\tmfc0 s5,\$15,1\n";
 	print "\tandi s5,s5,1\n";
-	print "\taddiu s5,s5,1        // (s5=1 for CORE0) | (s5=2 for CORE1)\n";
+	print "\tdaddiu s5,s5,1        // (s5=1 for CORE0) | (s5=2 for CORE1)\n";
 	print "\tlui s6,0xbb00\n";
 	print "\tsw s5,0x154(s6)    // write-only bit\n";
 	print "\tsync\n";
