@@ -321,6 +321,8 @@ sub owner_map {
 
 # Generate instructions
 sub generate_instructions {
+	my $instr = 0;
+
 	for (my $i = 0; $i < @pointer; $i++) {
 		my $k0 = 0;
 		my $k1 = 0;
@@ -330,30 +332,22 @@ sub generate_instructions {
 			$ch = (($ch - 1) ** 2) ** 0.5; #inversion select core
 			my $new_addr = $pointer[$i][$j][0];
 			while ($new_addr < ($pointer[$i][$j][0] + $pointer[$i][$j][1])) {
-				# Random instructions load or store
-				my $instr = int(rand(2));
-
-				if ($instr) {
-					$instr = "l";
-				} else {
-					$instr = "s";
-				}
 				# Get offset
 				my $offset = $new_addr - $pointer[$i][0][0];
 
 				# Get size double, word, half, byte
 				if ($new_addr % 8 == 0 && $new_addr + 8 < $pointer[$i][$j][0] + $pointer[$i][$j][1]) {
 					$new_addr += 8;
-					$instr .= "d";
+					$instr = "d";
 				} elsif ($new_addr % 4 == 0 && $new_addr + 4 < $pointer[$i][$j][0] + $pointer[$i][$j][1]) {
 					$new_addr += 4;
-					$instr .= "w";
+					$instr = "w";
 				} elsif ($new_addr % 2 == 0 && $new_addr + 2 < $pointer[$i][$j][0] + $pointer[$i][$j][1]) {
 					$new_addr += 2;
-					$instr .= "h";
+					$instr = "h";
 				} else {
 					$new_addr += 1;
-					$instr .= "b";
+					$instr = "b";
 				}
 
 				# Array with instructions and offset for cores
