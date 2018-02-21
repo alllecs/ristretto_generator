@@ -372,7 +372,6 @@ sub cic {
 		}
 		print "\n";
 	}
-#	$total_array[][]
 }
 
 sub check_equality {
@@ -388,140 +387,77 @@ sub check_equality {
 
 	return $n1, $n2;
 }
+sub get_test {
+	my ($test_n, $rand_core, $num_iter_1, $num_iter_2, $core) = @_;
 
-#### FIX MEEEE!!!!!
-sub print_test {
-	my ($test_n) = @_;
-	my $core = 2;
-
-#	get_test(0, $rand_core, $num_iter);
-
-	# Test for core 0
+	my $all_core = 2; # number all core
 	my @tmp_array = @total_array;
-	my $rand_core = int(rand(2));
 	my $rand_reg = 0;
 	my $rand_reg_1 = int(rand($t_regs)); # t0 - t7
 	my $rand_reg_2 = int(rand($t_regs)); # t0 - t7
 	my $num_iter = 0;
-	my $num_iter_0_1 = int(rand(@{$total_array[$rand_core]})); #for baze 1
-	my $num_iter_0_2 = int(rand(@{$total_array[$rand_core]})); #for baze 2
 	my $rand_status = int(rand(3)); # increment, decrement, random
-	my $addr_hex_1 = get_hex( $start_array[$num_iter_0_1][0] );
-	my $addr_hex_2 = get_hex( $start_array[$num_iter_0_2][0] );
+	my $addr_hex_1 = get_hex( $start_array[$num_iter_1][0] );
+	my $addr_hex_2 = get_hex( $start_array[$num_iter_2][0] );
 
 	# 's' register base 1 != 's' register base 2
 	($rand_reg_1, $rand_reg_2) = check_equality($rand_reg_1, $rand_reg_2);
 
-	print "\ntest_00${test_n}_core0:\n";
+	print "\ntest_00${test_n}_core$core:\n"; #FIX NUM CORE!!!
 	print "\tdli s$rand_reg_1, $addr_hex_1\n";
 	print "\tdli s$rand_reg_2, $addr_hex_2\n";
 
 	# Замес или переворот массива.
-
 	for(my $i = 0, my $inst = 0, my $inst_1 = 0, my $inst_2 = 0; $i < $instructions_number; $i++) {
 		my $num_reg = int(rand($s_regs));
 
+		# Random instructions load or store
+		my $instr = int(rand(2));
+
+		if ($instr) {
+			$instr = "l";
+		} else {
+			$instr = "s";
+		}
+
 		if ( int(rand(2)) ) {
-			$num_iter = $num_iter_0_1;
+			$num_iter = $num_iter_1;
 			$rand_reg = $rand_reg_1;
 			$inst = $inst_1;
 			$inst_1++;
+			if ($inst >= $#{$total_array[$rand_core][$num_iter]}) {
+				$inst_1 = 0;
+			}
 		} else {
-			$num_iter = $num_iter_0_2;
+			$num_iter = $num_iter_2;
 			$rand_reg = $rand_reg_2;
 			$inst = $inst_2;
 			$inst_2++;
+			if ($inst >= $#{$total_array[$rand_core][$num_iter]}) {
+				$inst_2 = 0;
+			}
 		}
 
-		if ($inst >= $#{$total_array[$rand_core][$num_iter]}) {
-			$inst = 0;
-		}
-
-		if ($rand_status == 2 && $perc_rand[$rand_status] * 100 / $test_zones < $perc_r[$rand_status] * $core) {
+		if ($rand_status == 2 && $perc_rand[$rand_status] * 100 / $test_zones < $perc_r[$rand_status] * $all_core) {
 			#Random mix array
 			$inst = int(rand(@{$total_array[$rand_core][$num_iter]}));
-		} elsif ( $rand_status == 1 && $perc_rand[$rand_status] * 100 / $test_zones < $perc_r[$rand_status] * $core) {
+		} elsif ( $rand_status == 1 && $perc_rand[$rand_status] * 100 / $test_zones < $perc_r[$rand_status] * $all_core) {
 			#Reverse array
 			@{$tmp_array[$rand_core][$num_iter]} = reverse @{$total_array[$rand_core][$num_iter]};
-		} elsif ( $rand_status == 0 && $perc_rand[$rand_status] * 100 / $test_zones >= $perc_r[$rand_status] * $core) {
+		} elsif ( $rand_status == 0 && $perc_rand[$rand_status] * 100 / $test_zones >= $perc_r[$rand_status] * $all_core) {
 			$rand_status = 2;
 			$i--;
-			$inst--;
+			$inst--; #FIX ME!!!
 		} else {
 			$rand_status = 0;
 		}
 		my $offset_hex = get_hex($tmp_array[$rand_core][$num_iter][$inst][1]);
-		print "\t$tmp_array[$rand_core][$num_iter][$inst][0] t$num_reg, $offset_hex(s$rand_reg)\n ";
+		print "\t$instr$tmp_array[$rand_core][$num_iter][$inst][0] t$num_reg, $offset_hex(s$rand_reg)\n ";
 	}
 	$perc_rand[$rand_status]++;
 
 	print "\tjr ra\n\tnop\n";
 
-	# Test for core 1
-	@tmp_array = @total_array;
-	$rand_core = (($rand_core - 1) ** 2) ** 0.5; #inversion select core
-	$rand_reg_1 = int(rand($t_regs)); #t0 - t7
-	$rand_reg_2 = int(rand($t_regs)); #t0 - t7
-	($rand_reg_1, $rand_reg_2) = check_equality($rand_reg_1, $rand_reg_2);
-	$num_iter = 0;
-	my $num_iter_1_1 = int(rand(@{$total_array[$rand_core]})); #for baze 1
-	my $num_iter_1_2 = int(rand(@{$total_array[$rand_core]})); #for baze 2
-	$rand_status = int(rand(3));
-
-	# Disable false sharing
-	if($disable_false_sharing) {
-		($num_iter_1_1, $num_iter_0_1) = check_equality($num_iter_1_1, $num_iter_0_1);
-		($num_iter_1_1, $num_iter_0_2) = check_equality($num_iter_1_1, $num_iter_0_2);
-		($num_iter_1_2, $num_iter_0_1) = check_equality($num_iter_1_2, $num_iter_0_1);
-		($num_iter_1_2, $num_iter_0_2) = check_equality($num_iter_1_2, $num_iter_0_2);
-	}
-
-	$addr_hex_1 = get_hex( $start_array[$num_iter_1_1][0] );
-	$addr_hex_2 = get_hex( $start_array[$num_iter_1_2][0] );
-
-	print "\ntest_00${test_n}_core1:\n";
-	print "\tdli s$rand_reg_1, $addr_hex_1\n";
-	print "\tdli s$rand_reg_2, $addr_hex_2\n";
-	#
-	# Print all instructions
-	for(my $i = 0, my $inst = 0; $i < $instructions_number; $i++, $inst++) {
-		my $num_reg = int(rand($s_regs));
-
-		# Select one base for one instruction
-		if ( int(rand(2)) ) {
-			$num_iter = $num_iter_1_1;
-			$rand_reg = $rand_reg_1;
-		} else {
-			$num_iter = $num_iter_1_2;
-			$rand_reg = $rand_reg_2;
-		}
-
-		# Check max number instruction
-		if ($inst > $#{$total_array[$rand_core][$num_iter]}) {
-			$inst = 0;
-		}
-
-		# Random, increment, decrement
-		if ($rand_status == 2 && $perc_rand[$rand_status] * 100 / $test_zones < $perc_r[$rand_status]  * $core) {
-			#Random mix array
-			$inst = int(rand(@{$total_array[$rand_core][$num_iter]}));
-		} elsif ( $rand_status == 1 && $perc_rand[$rand_status] * 100 / $test_zones < $perc_r[$rand_status] * $core) {
-			#Reverse array
-			@{$tmp_array[$rand_core][$num_iter]} = reverse @{$total_array[$rand_core][$num_iter]};
-		} elsif ( $rand_status == 0 && $perc_rand[$rand_status] * 100 / $test_zones >= $perc_r[$rand_status] * $core) {
-			$rand_status = 2;
-			$i--;
-			$inst--;
-		} else {
-			$rand_status = 0;
-		}
-		my $offset_hex = get_hex($tmp_array[$rand_core][$num_iter][$inst][1]);
-		print "\t$tmp_array[$rand_core][$num_iter][$inst][0] t$num_reg, $offset_hex(s$rand_reg)\n ";
-	}
-
-	$perc_rand[$rand_status]++;
-
-	print "\tjr ra\n\tnop\n\n";
 }
 
 sub get_main {
@@ -601,7 +537,22 @@ sub run_gen {
 
 	# Generate tests
 	for (my $n = 1; $n <= $test_zones; $n++) {
-		print_test($n);
+		my $rand_core = int(rand(2));
+		my $num_iter_0_1 = int(rand(@{$total_array[$rand_core]})); #for baze 1
+		my $num_iter_0_2 = int(rand(@{$total_array[$rand_core]})); #for baze 2
+		get_test($n, $rand_core, $num_iter_0_1, $num_iter_0_2, 0);
+
+		$rand_core = (($rand_core - 1) ** 2) ** 0.5; #inversion select core
+		my $num_iter_1_1 = int(rand(@{$total_array[$rand_core]})); #for baze 1
+		my $num_iter_1_2 = int(rand(@{$total_array[$rand_core]})); #for baze 2
+		# Disable false sharin
+		if($disable_false_sharing) {
+			($num_iter_1_1, $num_iter_0_1) = check_equality($num_iter_1_1, $num_iter_0_1);
+			($num_iter_1_1, $num_iter_0_2) = check_equality($num_iter_1_1, $num_iter_0_2);
+			($num_iter_1_2, $num_iter_0_1) = check_equality($num_iter_1_2, $num_iter_0_1);
+			($num_iter_1_2, $num_iter_0_2) = check_equality($num_iter_1_2, $num_iter_0_2);
+		}
+		get_test($n, $rand_core, $num_iter_1_1, $num_iter_1_2, 1);
 	}
 
 	get_main(0);
