@@ -457,7 +457,6 @@ sub get_test {
 	$perc_rand[$rand_status]++;
 
 	print "\tjr ra\n\tnop\n";
-
 }
 
 sub get_main {
@@ -493,8 +492,12 @@ sub get_main {
 
 		# Repeat test
 #		if (int(rand(2)) && $z < $zone_reexec * 100 / $test_zones) {
-		if (int(rand(100)) < $zone_reexec) {
-			$zone_rexec[$n]++;
+		if($zone_rexec[$n]) {
+			print "\tjal test_00${n}_core$core //reexec test $n\n";
+                        print "\tnop\n";
+                        print "\tSYNC_CORES\n";
+		} elsif (int(rand(100)) < $zone_reexec && $core == 0) {
+			$zone_rexec[$n] = 1;
 			print "\tjal test_00${n}_core$core //reexec test $n\n";
 			print "\tnop\n";
 			print "\tSYNC_CORES\n";
