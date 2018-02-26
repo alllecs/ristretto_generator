@@ -22,7 +22,6 @@ my $start_1 = 0;
 my @start_array = ();
 my @pointer = ();
 my @total_array = ();
-my @tmp_array = ();
 my $dataspaces_for_core0_min = 0;
 my $dataspaces_for_core0_max = 0;
 my $dataspaces_for_core1_min = 0;
@@ -391,7 +390,6 @@ sub get_test {
 	my ($test_n, $rand_core, $num_iter_1, $num_iter_2, $core) = @_;
 
 	my $all_core = 2; # number all core
-	my @tmp_array = @total_array;
 	my $rand_reg = 0;
 	my $rand_reg_1 = int(rand($t_regs)); # t0 - t7
 	my $rand_reg_2 = int(rand($t_regs)); # t0 - t7
@@ -399,7 +397,7 @@ sub get_test {
 	my $rand_status = int(rand(3)); # increment, decrement, random
 	my $addr_hex_1 = get_hex( $start_array[$num_iter_1][0] );
 	my $addr_hex_2 = get_hex( $start_array[$num_iter_2][0] );
-
+	my $instr_ls = 0;
 	# 's' register base 1 != 's' register base 2
 	($rand_reg_1, $rand_reg_2) = check_equality($rand_reg_1, $rand_reg_2);
 
@@ -412,12 +410,10 @@ sub get_test {
 		my $num_reg = int(rand($s_regs));
 
 		# Random instructions load or store
-		my $instr = int(rand(2));
-
-		if ($instr) {
-			$instr = "l";
+		if (int(rand(2))) {
+			$instr_ls = "l";
 		} else {
-			$instr = "s";
+			$instr_ls = "s";
 		}
 
 		if ( int(rand(2)) ) {
@@ -443,16 +439,16 @@ sub get_test {
 			$inst = int(rand(@{$total_array[$rand_core][$num_iter]}));
 		} elsif ( $rand_status == 1 && $perc_rand[$rand_status] * 100 / $test_zones < $perc_r[$rand_status] * $all_core) {
 			#Reverse array
-			@{$tmp_array[$rand_core][$num_iter]} = reverse @{$total_array[$rand_core][$num_iter]};
+			$inst = $#{$total_array[$rand_core][$num_iter]} - $inst;
 		} elsif ( $rand_status == 0 && $perc_rand[$rand_status] * 100 / $test_zones >= $perc_r[$rand_status] * $all_core) {
-			$rand_status = 2;
+			$rand_status = int(rand(3)); # increment, decrement, random
 			$i--;
-			$inst--; #FIX ME!!!
+			#$inst--; #FIX ME!!!
 		} else {
 			$rand_status = 0;
 		}
-		my $offset_hex = get_hex($tmp_array[$rand_core][$num_iter][$inst][1]);
-		print "\t$instr$tmp_array[$rand_core][$num_iter][$inst][0] t$num_reg, $offset_hex(s$rand_reg)\n ";
+		my $offset_hex = get_hex($total_array[$rand_core][$num_iter][$inst][1]);
+		print "\t$instr_ls$total_array[$rand_core][$num_iter][$inst][0] t$num_reg, $offset_hex(s$rand_reg)\n ";
 	}
 	$perc_rand[$rand_status]++;
 
