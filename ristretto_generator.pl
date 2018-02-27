@@ -59,72 +59,72 @@ sub get_settings {
 	open my $file_fish, '<', 'settings.txt' or die "Can not open file set.txt\n"; #open
 
 	while(<$file_fish>) {
-#	    if(/\s*NUM_CORES\s*=\s*\d+/)	# grep the pattern
+#	    if (/\s*NUM_CORES\s*=\s*\d+/)	# grep the pattern
 #		{@array=split /\s*=\s*/;	# set separator "=", put string parts to @array
 #		 @array1=split / |;/, $array[1];	# cut " " and ";" of value
 #		 $num_cores=$array1[0];}	# final value
 
-		if(/\s*DATASPACES_FOR_CORE0_MIN\s*=\s*\d+/) {
+		if (/\s*DATASPACES_FOR_CORE0_MIN\s*=\s*\d+/) {
 			@array_settings=split /\s*=\s*/;
 			@array1=split / |;/, $array_settings[1];
 			$dataspaces_for_core0_min=$array1[0];
-		} elsif(/\s*DATASPACES_FOR_CORE0_MAX\s*=\s*\d+/) {
+		} elsif (/\s*DATASPACES_FOR_CORE0_MAX\s*=\s*\d+/) {
 			@array_settings=split /\s*=\s*/;
 			@array1=split / |;/, $array_settings[1];
 			$dataspaces_for_core0_max=$array1[0];
-		} elsif(/\s*DATASPACES_FOR_CORE1_MIN\s*=\s*\d+/) {
+		} elsif (/\s*DATASPACES_FOR_CORE1_MIN\s*=\s*\d+/) {
 			@array_settings=split /\s*=\s*/;
 			@array1=split / |;/, $array_settings[1];
 			$dataspaces_for_core1_min=$array1[0];
-		} elsif(/\s*DATASPACES_FOR_CORE1_MAX\s*=\s*\d+/) {
+		} elsif (/\s*DATASPACES_FOR_CORE1_MAX\s*=\s*\d+/) {
 			@array_settings=split /\s*=\s*/;
 			@array1=split / |;/, $array_settings[1];
 			$dataspaces_for_core1_max=$array1[0];
-		} elsif(/\s*DATASPACES_ALIGNMENT1\s*=\s*\d+/) {
+		} elsif (/\s*DATASPACES_ALIGNMENT1\s*=\s*\d+/) {
 			@array_settings=split /\s*=\s*/;
 			@array1=split / |;/, $array_settings[1];
 			$dataspaces_aligment1=$array1[0];
-		} elsif(/\s*DATASPACES_ALIGNMENT2\s*=\s*\d+/) {
+		} elsif (/\s*DATASPACES_ALIGNMENT2\s*=\s*\d+/) {
 			@array_settings=split /\s*=\s*/;
 			@array1=split / |;/, $array_settings[1];
 			$dataspaces_aligment2=$array1[0];
-		} elsif(/\s*DATASPACES_ALIGNMENT3\s*=\s*\d+/) {
+		} elsif (/\s*DATASPACES_ALIGNMENT3\s*=\s*\d+/) {
 			@array_settings=split /\s*=\s*/;
 			@array1=split / |;/, $array_settings[1];
 			$dataspaces_aligment3=$array1[0];
-		} elsif(/\s*DATASPACES_SIZE_MIN\s*=\s*\d+/) {
+		} elsif (/\s*DATASPACES_SIZE_MIN\s*=\s*\d+/) {
 			@array_settings=split /\s*=\s*/;
 			@array1=split / |;/, $array_settings[1];
 			$dataspaces_size_min=$array1[0];
-		} elsif(/\s*DATASPACES_SIZE_MAX\s*=\s*\d+/) {
+		} elsif (/\s*DATASPACES_SIZE_MAX\s*=\s*\d+/) {
 			@array_settings=split /\s*=\s*/;
 			@array1=split / |;/, $array_settings[1];
 			$dataspaces_size_max=$array1[0];
-		} elsif(/\s*RANDOMIZE_INSTRUCTION_SEQ\s*=\s*\d+/) {
+		} elsif (/\s*RANDOMIZE_INSTRUCTION_SEQ\s*=\s*\d+/) {
 			@array_settings=split /\s*=\s*/;
 			@array1=split / |;/, $array_settings[1];
 			$randomize_instruction_seq=$array1[0];
-		} elsif(/\s*ZONE_REEXEC\s*=\s*\d+/) {
+		} elsif (/\s*ZONE_REEXEC\s*=\s*\d+/) {
 			@array_settings=split /\s*=\s*/;
 			@array1=split / |;/, $array_settings[1];
 			$zone_reexec=$array1[0];
-		} elsif(/\s*DISABLE_FALSE_SHARING\s*=\s*\d+/) {
+		} elsif (/\s*DISABLE_FALSE_SHARING\s*=\s*\d+/) {
 			@array_settings=split /\s*=\s*/;
 			@array1=split / |;/, $array_settings[1];
 			$disable_false_sharing=$array1[0];
-		} elsif(/\s*ONE_TEST_LENGHT_MIN\s*=\s*\d+/) {
+		} elsif (/\s*ONE_TEST_LENGHT_MIN\s*=\s*\d+/) {
 			@array_settings=split /\s*=\s*/;
 			@array1=split / |;/, $array_settings[1];
 			$one_test_lenght_min=$array1[0];
-		} elsif(/\s*ONE_TEST_LENGHT_MAX\s*=\s*\d+/) {
+		} elsif (/\s*ONE_TEST_LENGHT_MAX\s*=\s*\d+/) {
 			@array_settings=split /\s*=\s*/;
 			@array1=split / |;/, $array_settings[1];
 			$one_test_lenght_max=$array1[0];
-		} elsif(/\s*TEST_ZONES\s*=\s*\d+/) {
+		} elsif (/\s*TEST_ZONES\s*=\s*\d+/) {
 			@array_settings=split /\s*=\s*/;
 			@array1=split / |;/, $array_settings[1];
 			$test_zones=$array1[0];
-#		} elsif(/\s*DATA\s*\d+/) {			# grep "DATAn", n=1,2,3...
+#		} elsif (/\s*DATA\s*\d+/) {			# grep "DATAn", n=1,2,3...
 #			@array_settings=split /\s*,\s*/;	# separate string to array, separator ","
 #			$ar_name=$array[0];		# first element is array name
 #			print "array name is $ar_name\n";	#debug string
@@ -133,14 +133,14 @@ sub get_settings {
 #		} else {
 #			print "Option not found!\n";
 		}
-		if(/DATA[\d,\s]*\s([0-9abcdefx]+).*\s([0-9abcdefx]+).*R\/W/) {
+		if (/DATA[\d,\s]*\s([0-9abcdefx]+).*\s([0-9abcdefx]+).*R\/W/) {
 			$array_addr[$i_addr][0] = $1;
 			$array_addr[$i_addr][1] = $2;
 			$i_addr++;
-		} elsif(/DATASPACES_ALIGNMENT.*SIZE\s?=\s?([0-9abcdefx]+)/) {
+		} elsif (/DATASPACES_ALIGNMENT.*SIZE\s?=\s?([0-9abcdefx]+)/) {
 			$array_a_size[$i_a_size] = $1;
 			$i_a_size++;
-		} elsif(/DATASPACES_ALIGNMENT.*SIZE_RATIO\s?=\s?(\d+)/) {
+		} elsif (/DATASPACES_ALIGNMENT.*SIZE_RATIO\s?=\s?(\d+)/) {
 			$array_a_ratio[$i_a_ratio] = $1;
 			$i_a_ratio++;
 		}
@@ -168,11 +168,11 @@ sub get_start_addr {
 	my $max_ratio = 0;
 	my $alignment_size = 0;
 	my $max_size = Math::BigInt->new($array_addr[$rand_index_addr][1]) - Math::BigInt->new($array_addr[$rand_index_addr][0]);
-	for(my $i = 0; $i < $#array_a_ratio; $i++) {
+	for (my $i = 0; $i < $#array_a_ratio; $i++) {
 		$max_ratio += $array_a_ratio[$i];
 	}
 	my $rand_index_size = int(rand($max_ratio + 1));
-	if($rand_index_size > 0 && $rand_index_size <= $array_a_ratio[0]) {
+	if ($rand_index_size > 0 && $rand_index_size <= $array_a_ratio[0]) {
 		$alignment_size = eval $array_a_size[0];
 	} elsif ($rand_index_size > $array_a_ratio[0] && $rand_index_size <= $array_a_ratio[1]) {
 		$alignment_size = eval $array_a_size[1];
@@ -194,13 +194,13 @@ sub get_start_addr {
 
 # Filling array: start address and section sizes
 sub start {
-	for(my $start_i = 0; $start_i < $start_0 + $start_1; $start_i++) {
+	for (my $start_i = 0; $start_i < $start_0 + $start_1; $start_i++) {
 #		$start_array[$start_i][0] = int (int ( rand($start_0 + $start_1) ) * eval($dataspaces_aligment2) ) | 0x08000000;	#random addr 0x88000000 - 88200000
 		($start_array[$start_i][0]) = get_start_addr();
 		$start_array[$start_i][1] = int (rand($dataspaces_size_max - $dataspaces_size_min) + $dataspaces_size_min);	#cache line 3 - 5 (* 32 Byte)
 
 		# Check crossing sections
-		for(my $i = 0; $i < @start_array - 1; $i++) {
+		for (my $i = 0; $i < @start_array - 1; $i++) {
 			if ( ($start_array[$start_i][0] >= $start_array[$i][0]
 			   && $start_array[$start_i][0] <= $start_array[$i][0] + $start_array[$i][1])
 			   || ($start_array[$start_i][0] + $start_array[$start_i][1] >= $start_array[$i][0]
@@ -221,7 +221,7 @@ sub start {
 	#stor write in file
 	select($data_in_file);
 
-	for(my $start_i = 0; $start_i < $start_0; $start_i++) {
+	for (my $start_i = 0; $start_i < $start_0; $start_i++) {
 		# Initialization data each sections for core 0
 		data_initialize($start_array[$start_i][0], $start_array[$start_i][1]);
 		$data_in_file = select(FILE_DATA);
@@ -240,7 +240,7 @@ sub start {
 	print "random_data_core1:\n";
 	select($data_in_file);
 
-	for(my $start_i = $start_0; $start_i < $start_0 + $start_1; $start_i++) {
+	for (my $start_i = $start_0; $start_i < $start_0 + $start_1; $start_i++) {
 		# Initialization data each sections for core 1
 		data_initialize($start_array[$start_i][0], $start_array[$start_i][1]);
 		$data_in_file = select(FILE_DATA);
@@ -282,13 +282,13 @@ sub generate_data {
 	my ($total_size, $core) = @_;
 	my $rand_data = 0;
 
-	if($core) {	#core 1
-		for(my $i = 0; $i <=  $total_size; $i++) {
+	if ($core) {	#core 1
+		for (my $i = 0; $i <=  $total_size; $i++) {
 			$rand_data = sprintf(".word 0x%08X", int(rand(2 ** 32) | 0x88888888));
 			print "$rand_data\n";
 		}
 	} else {	#core 0
-		for(my $i = 0; $i <=  $total_size; $i++) {
+		for (my $i = 0; $i <=  $total_size; $i++) {
 			$rand_data = sprintf(".word 0x%08X", int(rand(2 ** 32) & 0x77777777));
 			print "$rand_data\n";
 		}
@@ -298,7 +298,7 @@ sub generate_data {
 # The shared sections on the places
 sub owner_map {
 	my $j = 0;
-	for(my $i = 0; $i < @start_array; $i++) {
+	for (my $i = 0; $i < @start_array; $i++) {
 		my $addr = $start_array[$i][0];
 		my $size = int(rand($size_sectors) + 1); #size 1-32
 		my $rest_size = $start_array[$i][1] - $size;
@@ -365,8 +365,8 @@ sub generate_instructions {
 }
 
 sub cic {
-	for(my $i = 0; $i < @pointer; $i++) {
-		for(my $j = 0; $j < @{$pointer[$i]}; $j++) {
+	for (my $i = 0; $i < @pointer; $i++) {
+		for (my $j = 0; $j < @{$pointer[$i]}; $j++) {
 			print "$pointer[$i][$j][1] ";
 		}
 		print "\n";
@@ -377,7 +377,7 @@ sub check_equality {
 	my ($n1, $n2) = @_;
 
 	if ($n1 == $n2) {
-		if($n1 > 1) {
+		if ($n1 > 1) {
 			$n1--;
 		} else {
 			$n1++;
@@ -406,7 +406,7 @@ sub get_test {
 	print "\tdli s$rand_reg_2, $addr_hex_2\n";
 
 	# Замес или переворот массива.
-	for(my $i = 0, my $inst = 0, my $inst_1 = 0, my $inst_2 = 0; $i < $instructions_number; $i++) {
+	for (my $i = 0, my $inst = 0, my $inst_1 = 0, my $inst_2 = 0; $i < $instructions_number; $i++) {
 		my $num_reg = int(rand($s_regs));
 
 		# Random instructions load or store
@@ -472,7 +472,7 @@ sub get_main {
 	print "\tSYNC_CORES\n";
 
 	#Initialization 't' registers
-	for(my $j = 0; $j < 8; $j++) {	#t0-t7
+	for (my $j = 0; $j < 8; $j++) {	#t0-t7
 		printf("\tdli t$j, 0x%016X\n", (int(rand(4294967296)) << 32) | int(rand(4294967296)) );
 	}
 
@@ -488,7 +488,7 @@ sub get_main {
 
 		# Repeat test
 #		if (int(rand(2)) && $z < $zone_reexec * 100 / $test_zones) {
-		if($zone_rexec[$n]) {
+		if ($zone_rexec[$n]) {
 			print "\tjal test_00${n}_core$core //reexec test $n\n";
                         print "\tnop\n";
                         print "\tSYNC_CORES\n";
@@ -545,7 +545,7 @@ sub run_gen {
 		my $num_iter_1_1 = int(rand(@{$total_array[$rand_core]})); #for baze 1
 		my $num_iter_1_2 = int(rand(@{$total_array[$rand_core]})); #for baze 2
 		# Disable false sharin
-		if($disable_false_sharing) {
+		if ($disable_false_sharing) {
 			($num_iter_1_1, $num_iter_0_1) = check_equality($num_iter_1_1, $num_iter_0_1);
 			($num_iter_1_1, $num_iter_0_2) = check_equality($num_iter_1_1, $num_iter_0_2);
 			($num_iter_1_2, $num_iter_0_1) = check_equality($num_iter_1_2, $num_iter_0_1);
